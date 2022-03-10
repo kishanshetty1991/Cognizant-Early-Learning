@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Bootstrap 4 Nested Rows and Columns</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style>
+	/* Some custom styles to beautify this example */
+    .head-content{
+		min-height: 100px;
+        background: #ccccff;
+    }
+    .main-content{
+        min-height: 170px;
+        margin-bottom: 10px;
+        background: #b366ff;
+    }
+  .sidebar-content{
+        min-height: 80px;
+        margin-bottom: 10px;
+        background: #ffe6cc;
+    }
+  
+  
+</style>
+</head>
+<body>
+
+         <!-- WRITE YOUR CODE HERE -->
+         <div class="container-fluid p-1">
+             <div class="row">
+                 <div class="col-12">
+                     <div class="head-content">Title</div>
+                 </div>
+             </div>
+            
+        </div>
+        
+        <div class="container-fluid p-1">
+             <div class="row">
+                 <div class="col-lg-10 col-md-8 col-sm-6">
+                     <div class="main-content">Main content</div>
+                 </div>
+                 <div class="col-lg-2 col-md-4 col-sm-6">
+                     <div class="container-fluid p-1">
+                         <div class="sidebar-content">Side bar content</div>
+                         <div class="sidebar-content">Side bar content</div>
+                     </div>
+                 </div>
+             </div>
+        </div>
+         
+        
+ 
+</body>
+</html>
