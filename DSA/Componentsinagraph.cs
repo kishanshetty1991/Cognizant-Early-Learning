@@ -18,48 +18,69 @@ class Result
     /*
      * Complete the 'componentsInGraph' function below.
      *
-     * The function is expected to return an int_ARRAY.
-     * The function accepts 2D_int_ARRAY gb as parameter.
+     * The function is expected to return an INTEGER_ARRAY.
+     * The function accepts 2D_INTEGER_ARRAY gb as parameter.
      */
-
-    public static List<int> componentsInGraph(List<List<int>> comp)
-    {
-        List<int> li = new List<int>();
-        li.Add(int.MinValue);
-        li.Add(int.MaxValue);
-       
-        Dictionary<int, HashSet<int>> map = new Dictionary<int, HashSet<int>>();
-        foreach(List<int> q in comp)
-        {
-            HashSet<int> set0 = map.ElementAtOrDefault(q[0],new HashSet<int>());
-            set0.add(q.get(1));
-            map.put(q.get(0),set0);
-            Set<int> set1 = map.getOrDefault(q.get(1),new HashSet<>());
-            set1.add(q.get(0));
-            map.put(q.get(1),set1);
-        }
-        while(map.size()>0)
-        {
-            Set<int> dis = new HashSet<>();
-            LinkedList<int> bfs = new LinkedList<>();
-            Map.Entry<int,Set<int>> ent = map.entrySet().iterator().next();
-            map.remove(ent.getKey());
-            dis.add(ent.getKey());
-            bfs.addAll(ent.getValue());
-            while(bfs.size()>0)
-            {
-                int pop=bfs.removeFirst();
-                if(map.containsKey(pop))
-                {
-                    dis.add(pop);
-                    bfs.addAll(map.get(pop));
-                    map.remove(pop);
-                }
+    
+    public static int find(int x, List<List<int>> parent){
+            if(x==parent[x][0]){
+                return x;
             }
-            li.set(0,int.min(li.get(0),dis.size()));
-            li.set(1,int.max(li.get(1),dis.size()));
+            parent[x][0]=find(parent[x][0], parent);
+            return(parent[x][0]);
         }
-        return li;
+    
+    public static List<List<int>> union(int x, int y, List<List<int>> parent){
+        if (parent[x][1]>=parent[y][1]){
+            parent[x][1]+=parent[y][1];
+            parent[y][0]=x;   
+            parent[y][1]=1;
+        }
+        else{
+            parent[y][1]+=parent[x][1];
+            parent[x][0]=y;
+            parent[x][1]=1;
+            }
+        return parent;
+            }
+        
+    
+    public static List<int> componentsInGraph(List<List<int>> gb)
+    {
+        List<int> x = new List<int>();
+        List<List<int>> parent = new List<List<int>>();
+        int N=1;
+        
+        foreach(var edge in gb){
+         if(N<edge[1]){
+             N = edge[1];
+         }
+        }
+        parent = (from i in Enumerable.Range(0, 2 * N + 1)
+        select new List<int> {i,1}).ToList();
+
+        foreach(var edge in gb){
+            var px=find(edge[0],parent);
+            var py=find(edge[1],parent);
+            if(px!=py){
+            parent = union(px,py, parent);
+            }
+        }
+        
+        
+    List<int> lists = new List<int>();
+    int n = 2*N+1;
+    for(int i=0;i<n;i++){
+        if(parent[i][1]>1){
+            lists.Add(parent[i][1]);
+        }   
+    }
+    
+    lists.Sort();
+
+    x.Add(lists[0]);
+    x.Add(lists[lists.Count-1]);
+    return x;     
     }
 
 }
@@ -87,4 +108,5 @@ class Solution
         textWriter.Close();
     }
 }
+
 
