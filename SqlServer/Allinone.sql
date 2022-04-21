@@ -90,8 +90,113 @@ go
 
 -------------------------------------------------------------
 
+9.Trigger - claims
 
+CREATE TRIGGER claim_audits on claims 
+for insert
+as
+begin
+    declare @custname varchar(25);
+    declare @oamount int;
+    declare @lamount int;
+    declare @amount varchar(25);
+    declare @action varchar(25);
+    
+    select @custname = first_name from Inserted I 
+    inner join customer_policy CP on CP.id = I.customer_policy_id
+    inner join customer C on C.id = CP.customer_id;
+    
+    select @oamount = amount_of_claim from claims where customer_policy_id=101 order by amount_of_claim desc;
+    select @lamount = i.amount_of_claim from inserted i;
+    select @amount = @lamount + @lamount + 50000;
+   
+    
+    insert into claim_audit values(@custname , @amount , 'Updated customer claimed amount');
+    -- select * from claim_audit; 
+end
+go
+-----------------------------------------------------
+10.Department records using cursors
 
+Declare @dept_name varchar(max), @empcount varchar(max);
+
+Declare dpt_cur cursor FOR
+select count(e.workdept), d.deptname
+from Department d join Employee e
+on d.deptno = e.workdept
+group by e.workdept,d.deptname
+order by d.deptname;
+open dpt_cur;
+
+fetch next from dpt_cur into
+@empcount,
+@dept_name;
+while @@fetch_status = 0
+
+Begin
+    if(@empcount > 1)
+    print @dept_name+"department has"+cast(@empcount as varchar)+"employees";
+    fetch next from dpt_cur into
+    @empcount,
+    @dept_name;
+end;
+close dpt_cur;
+deallocate dpt_cur;
+go
+----------------------------------------------------------------------------------
+11.Create a Procedure delete_status
+
+create procedure delete_status
+@status_id int
+as 
+begin
+        if exists(select * from agent where id = @status_id)
+        begin
+                insert into status_error_log(error_msg)
+                values('child records existing in claims table');
+        end
+
+        else if exists(select * from address where id = @status_id)
+        begin
+                insert into status_error_log(error_msg)
+                values('child records existing in claims table');
+        end
+
+        else if exists(select * from insurance_company where id = @status_id)
+        begin
+                insert into status_error_log(error_msg)
+                values('child records existing in claims table');
+        end
+
+        else if exists(select * from customer where id = @status_id)
+        begin
+                insert into status_error_log(error_msg)
+                values('child records existing in claims table');
+        end
+
+        else if exists(select * from customer_policy where id = @status_id)
+        begin
+                insert into status_error_log(error_msg)
+                values('child records existing in claims table');
+        end
+
+        else if exists(select * from policy where id = @status_id)
+        begin
+                insert into status_error_log(error_msg)
+                values('child records existing in claims table');
+        end
+
+        else if exists(select * from claims where id = @status_id)
+        begin
+                insert into status_error_log(error_msg) values("child records existing in claims table");
+        end
+
+        else
+        begin
+                delete from status where id = @status_id
+        end
+end
+go
 
 
 
